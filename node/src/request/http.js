@@ -55,3 +55,20 @@ export const put = (url, params) => {
     })
 }
 
+/**
+ * delete，仅传入路径变量
+ * @param {String} url [请求的url地址]
+ * @param {int / null} pathVariable [路径变量]
+ */
+export const del = (url, pathVariable) => {
+    if (pathVariable === null)
+        return request({
+            method:'delete',
+            url: url
+        })
+    return request({
+        method:'delete',
+        url: url + '/' + pathVariable
+    })
+}
+
