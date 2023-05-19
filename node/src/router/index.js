@@ -24,6 +24,9 @@ import EnterCreator from '../views/creativecenter/EnterCreator.vue'
 
 //个人中心
 import MyCenter from '@/views/MyCenter.vue'
+import Fan from "@/views/Fan";
+import Chat from "@/views/Chat";
+import Follower from "@/views/Follower";
 
 
 
@@ -40,7 +43,7 @@ VueRouter.prototype.push = function push(location) {
 
 const routes = [
     //主路由
-    { 
+    {
         path:'/',
         component: App,
         children:[
@@ -52,6 +55,18 @@ const routes = [
             {
               path: 'home', 
               component: Home
+            },
+            {
+              path: 'fan',
+              component: Fan
+            },
+            {
+              path: 'follower',
+              component: Follower
+            },
+            {
+              path: 'chat',
+              component: Chat
             },
             {
               path: 'mycenter', 
