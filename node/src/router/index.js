@@ -23,9 +23,6 @@ import UploadSong from '../views/creativecenter/UploadSong.vue'
 
 //个人中心
 import MyCenter from '@/views/MyCenter.vue'
-import Fan from "@/views/Fan";
-import Chat from "@/views/Chat";
-import Follower from "@/views/Follower";
 
 //歌单具体信息
 import MyMenuCenter from '@/views/MyMenu.vue'
@@ -61,7 +58,7 @@ VueRouter.prototype.push = function push(location) {
 
 const routes = [
     //主路由
-    {
+    { 
         path:'/',
         component: App,
         
