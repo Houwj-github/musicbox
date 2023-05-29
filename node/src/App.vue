@@ -10,8 +10,10 @@
 export default {
   name: 'Main',
   components: {
-  }
+  },
 }
+
+
 </script>
 
 <style>

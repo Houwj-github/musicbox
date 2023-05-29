@@ -8,6 +8,7 @@
       <!-- 路由匹配到的组件将渲染在这里 -->
       <router-view></router-view>
     </div>
+    <the-footer/>
   </div>
 </template>
 
@@ -15,12 +16,14 @@
 <script>
 // 顶部导航栏
 import TheHeader from '../components/TheHeader.vue'
+import TheFooter from '@/components/TheFooter.vue';
 export default{
   data(){
       return{}
   },
   components:{
-      TheHeader
+      TheFooter,
+      TheHeader,
   }
 }
 </script>

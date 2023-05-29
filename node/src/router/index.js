@@ -20,7 +20,6 @@ import FavoritePlayLists from '../views/mymusic/FavoritePlayLists.vue'
 import CreateAlbum from '../views/creativecenter/CreateAlbum.vue'
 import MyCreation from '../views/creativecenter/MyCreation.vue'
 import UploadSong from '../views/creativecenter/UploadSong.vue'
-import EnterCreator from '../views/creativecenter/EnterCreator.vue'
 
 //个人中心
 import MyCenter from '@/views/MyCenter.vue'
@@ -28,6 +27,25 @@ import Fan from "@/views/Fan";
 import Chat from "@/views/Chat";
 import Follower from "@/views/Follower";
 
+//歌单具体信息
+import MyMenuCenter from '@/views/MyMenu.vue'
+import CollectMenuCenter from '@/views/CollectMenu.vue'
+import CollectAlbumCenter from '@/views/CollectAlbum.vue'
+
+//歌曲界面
+import Song from '@/views/Song.vue'
+
+//社交界面
+import Fan from "@/views/Fan.vue";
+import Chat from "@/views/Chat.vue";
+import Follower from "@/views/Follower.vue";
+
+//论坛
+import Post from '@/views/post/Post.vue'
+import PostCenter from '@/views/post/PostCenter.vue'
+import CreatePost from '@/views/post/CreatePost.vue'
+import MyPost from '@/views/post/MyPost.vue'
+import MyComment from '@/views/post/MyComment.vue'
 
 
 Vue.use(VueRouter)
@@ -46,6 +64,7 @@ const routes = [
     {
         path:'/',
         component: App,
+        
         children:[
             //子路由
         { 
@@ -70,7 +89,8 @@ const routes = [
             },
             {
               path: 'mycenter', 
-              component: MyCenter
+              component: MyCenter,
+              // redirect:'/main/mycenter'
             },
             {
               path: 'mymusic', 
@@ -114,16 +134,48 @@ const routes = [
                   path:'uploadsong',
                   component: UploadSong,
                 },
-                {
-                  path:'entercreator',
-                  component: EnterCreator,
-                },
               ]
             },
             {
               path:'search',
               component:Search,
             },
+            {
+              path:'collectalbum',
+              component:CollectAlbumCenter,
+            },
+            {
+              path:'mymenu',
+              component:MyMenuCenter,
+            },
+            {
+              path:'collectmenu',
+              component:CollectMenuCenter,
+            } ,
+            {
+              path:'song',
+              component:Song,
+            },
+            {
+              path:'post',
+              component:Post,
+            },
+            {
+              path:'postcenter',
+              component:PostCenter,
+            },
+            {
+              path:'createpost',
+              component:CreatePost,
+            },
+            {
+              path:'mypost',
+              component:MyPost,
+            },
+            {
+              path:'mycomment',
+              component:MyComment,
+            }
           ]
 
         },

@@ -131,6 +131,7 @@ export default {
                             type: 'success'
                         });
                         this.$store.commit('login',res.data.data.token);
+                        console.log(res.data.data.token)
                         this.$router.push('/main/home')   //跳转到主页面
                     }
                     else

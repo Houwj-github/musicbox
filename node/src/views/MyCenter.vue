@@ -5,19 +5,19 @@
             <div class="background-image">
                 <!-- 头像 -->
                 <div style="display: flex;flex-direction: row;align-items: baseline;margin-top: 15%;justify-content: center;">
-                    <el-avatar :size="80" :src="user.avatar"></el-avatar>
+                    <el-avatar :size="80" :src="user.avatar" ></el-avatar>
                     <i class="el-icon-edit" @click="dialogVisible = true" style="margin-left: 5px;"></i>
                 </div>
 
                 <!-- 用户昵称 性别 vip 创作者 -->
                 <div style="margin-left: 46%;display: flex;flex-direction: row;align-items: center;">
                     <span style="margin-right: 30px;color:#409EFF;width:100px;display: flex;justify-content: center;">{{user.nickname}}</span>
-                    <i :class="this.user.gender=='女'?'el-icon-female':'el-icon-male'"  style="margin-right: 30px;"></i>
-                    <div class="vip-layout" :class="{bg:user.isVip}" >VIP</div>
+                    <i :class="this.user.gender=='f'?'el-icon-female':'el-icon-male'"  style="margin-right: 30px;"></i>
+                    <div class="vip-layout" :class="{bg:user.isVip}" @click="upgradeVip">VIP</div>
 
                     <div class="creator-layout" :class="{creator:user.isCreator}">
                         <i class="el-icon-headset" style="font-weight: 800;"></i>
-                        <span style="margin-left: 5px;">创作者</span>
+                        <span style="margin-left: 5px;" @click="upgradeCreator">创作者</span>
                     </div>  
                 </div>
 
@@ -61,8 +61,8 @@
                         </el-form-item>
                         <el-form-item label="性别选择">
                             <el-radio-group v-model="form.gender">
-                            <el-radio label="男"></el-radio>
-                            <el-radio label="女"></el-radio>
+                                <el-radio label="m">男</el-radio>
+                                <el-radio label="f">女</el-radio>
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item label="职业选择">
@@ -76,11 +76,21 @@
                         </el-form-item>
                     </div>
                     <div style="display:flex;flex-direction: column;align-items: center;margin: auto;">
-                            <input type="file" ref="fileInput" style="display: none" @change="handleFileChange">
+                            <!-- <input type="file" ref="fileInput" style="display: none" @change="handleFileChange">
                             <div class="uploadcover-container" @click="handleClick">
                                 <span v-if="!form.avatar" style="font-size:50px;color:rgba(54, 148, 255,0.8)">+</span>
                                 <img :src="form.avatar" v-else>
-                            </div>
+                            </div> -->
+                            <el-upload
+                                ref="upload"
+                                class="avatar-uploader"
+                                action="http://124.70.195.38:8000/user/avatar"
+                                :headers="uploadHeaders"
+                                name="avatarFile"
+                                :auto-upload="false">
+                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                </el-upload>
                         <div class="coverfont">
                             <label>上传头像</label>
                         </div>
@@ -105,7 +115,7 @@
             </span>  
         </el-dialog>
         
-        <div style="margin:100px 200px;">数据统计</div>
+        <!-- <div style="margin:100px 200px;">数据统计</div> -->
         <!-- <el-image :src="src" style="margin:auto -100px;z-index: -1;"></el-image> -->
 
         
@@ -117,13 +127,16 @@
 
 <script>
 import { modifyUserInfoAPI } from '@/request/api';       //导入API接口
-import { getUserInfoAPI } from '@/request/api';       //导入API接口
+import { getUserInfoAPI,upgradeVipAPI,upgradeCreatorAPI ,userAvaterAPI} from '@/request/api';       //导入API接口
+import {songPlayAPI} from '@/request/api'
 
 export default{
 
     data(){
         
         return{
+            uploadHeaders:{"token":localStorage.getItem('token')},          //token
+            imageUrl:'',
             dialogVisible: false,   //弹出框
             username:'',           //账号
             user:{
@@ -168,7 +181,8 @@ export default{
                     value: '军人',
 
                 }],
-            src: require("../assets/images/my-center-backgound.jpg")
+            src: require("../assets/images/my-center-backgound.jpg"),
+            birthdayFlag:'',
         }
     },
     
@@ -176,16 +190,18 @@ export default{
         handleClose(done) {
         this.$confirm('确认提交？')
           .then(_ => {
-            this.form.updateTime=new Date();
-            this.form.updateTime=this.dateToStr(this.form.updateTime,'yyyy-MM-dd hh:mm:ss');
-            if(this.birthday!==this.form.birthday)
+            // this.form.updateTime=new Date();
+            // this.form.updateTime=this.dateToStr(this.form.updateTime,'yyyy-MM-dd hh:mm:ss');
+            
+            if(this.birthdayFlag!=this.form.birthday)
             {
                 this.form.birthday=this.dateToStr(this.form.birthday,'yyyy-MM-dd hh:mm:ss');
                 this.form.birthday=this.form.birthday.slice(0, 10);
             }
-            console.log(this.form.updateTime)
+            console.log(this.user.birthday)
             console.log(this.form.birthday)
             console.log(this.form.gender);
+            this.$refs.upload.submit();
 
             modifyUserInfoAPI({                    
                 id:this.form.id,
@@ -209,6 +225,7 @@ export default{
                 if(res.data.success)
                 {
                     this.user=this.form;
+                    this.birthdayFlag=this.user.birthday;
                     this.$message({
                     message: '修改成功！',
                     type: 'success'
@@ -216,6 +233,7 @@ export default{
                 }
                 else
                 {
+                    this.form=this.user;
                     this.$message({
                         message: res.message,
                         type: 'warning'
@@ -223,8 +241,10 @@ export default{
                 }
             }) 
             done();
-          })
-          .catch(_ => {});
+            })
+          .catch(_ => {
+            
+          });
           this.dialogVisible = false;
       },
        // 导入头像
@@ -264,9 +284,13 @@ export default{
                  this.user=res.data.detailed_info;
                  this.form=res.data.detailed_info;
                  this.username=res.data._username;
-                 this.user.birthday=this.user.birthday.slice(0, 10);
-
-                 console.log(this.user.birthday)
+                 if( this.user.birthday!=null)
+                    this.user.birthday=this.user.birthday.slice(0, 10);
+                const spliceLength2 = this.user.avatar.lastIndexOf("/");
+                this.user.avatar="http://124.70.195.38:8000/avatar/"+this.user.avatar.slice(spliceLength2 + 1);
+                console.log(this.user.avatar)
+                 this.birthdayFlag=this.user.birthday;
+                 console.log(this.birthdayFlag)
                  console.log(this.form)
             }
             else
@@ -276,7 +300,8 @@ export default{
                 type: 'warning'
                 });
             }
-        })
+        });
+        
        },
     dateToStr(date,fmt){
         var o = { 
@@ -300,15 +325,96 @@ export default{
         }
     return fmt;
    },
-   birthdayDateChange(date){
-    var i=0;
-    for(i;i<10;i++)
-        date[i]
-   }
-       
+   //成为创作者
+   upgradeCreator(){
+    this.$confirm('确认要升级成为创作者？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        
+        upgradeCreatorAPI({}).then(res => 
+            {
+                console.log(res)
+                if(res.data.success)
+                {
+                    this.$message({
+                        type: 'success',
+                        message: '升级成功!'
+                    });
+                    this.user.isCreator=true;
+                }
+                else
+                {
+                    this.$message({
+                    message: res.data.message,
+                    type: 'warning'
+                    });
+                }
+            });
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消!'
+          });          
+        });
+   },
+   //成为vip
+   upgradeVip(){
+    this.$confirm('确认要升级成为VIP？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        
+        upgradeVipAPI({}).then(res => 
+            {
+                console.log(res)
+                if(res.data.success)
+                {
+                    this.$message({
+                        type: 'success',
+                        message: '升级成功!'
+                    });
+                    this.user.isVip=true;
+                }
+                else
+                {
+                    this.$message({
+                    message: res.data.message,
+                    type: 'warning'
+                    });
+                }
+            });
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消!'
+          });          
+        });
+     },
+     handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        // const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        // if (!isLt2M) {
+        //   this.$message.error('上传头像图片大小不能超过 2MB!');
+        // }
+        // return isJPG && isLt2M;
+        return isJPG ;
+        
+      }
     },
     created(){
-       this.getUserInfo()
+        this.getUserInfo();
     },
 }
 
@@ -324,7 +430,7 @@ export default{
   margin-right: -100px;
 }
 .background-image{
-  background:url("../assets/images/my-center-backgound.jpg");
+  background:url("../assets/images/background.jpg");
   width:100%;
   height:100%;;
   background-size:100% 100%;
@@ -421,4 +527,27 @@ export default{
 .uploadbutton:hover{
     border-color:#333;
 }
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

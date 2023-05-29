@@ -11,26 +11,14 @@
             </el-select>
         </div>
 
-        <!-- <div style="margin-top:20px;">
-            <el-table :data="tableData" >
-                <el-table-column fixed prop="date" label="日期" width="150" ></el-table-column>
-                <el-table-column prop="name" label="姓名"  width="120"></el-table-column>
-                <el-table-column prop="province" label="省份" width="120"></el-table-column>
-                <el-table-column prop="city" label="市区" width="120"></el-table-column>
-                <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
-                <el-table-column fixed="right" label="操作" width="100">
-                <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
-                </template>
-                </el-table-column>
-            </el-table>
-        </div> -->
-        
+        <div class="table">
+            
+        </div>
     </div>
 </template>
 
 <script>
+import {menuMyPageAPI} from '@/request/api';
 export default{
     data(){
         return{
@@ -40,41 +28,28 @@ export default{
                     }, {
                     value: '次数',
                 }],
-                tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1517 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1519 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1516 弄',
-          zip: 200333
-        }]
+                
         }
     },
+    methods:{
+        check(){
+            var id='1655115610121822210'
+            var url='/menu/my/'+id+'}'
+                menuMyPageAPI(url)
+                .then(res => 
+                {
+                    console.log(res)
+            })
+        }
+    },
+    created(){
+        // this.check()
+    }
 }
 </script>
 
 <style lang="less" scoped>
+
 .container{
     margin:0 200px;
     background: rgba(201,221,245, 0.4);
@@ -98,8 +73,16 @@ export default{
     width:500px;
     justify-content: space-between;
 }
-.el-table tr{
-    background-color: rgba(201,221,245, 0.4);
+.table{
+    background-color:rgba(201,221,245, 0.4);
+    margin:50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.th{
+    display: flex;
+    flex-direction: row;
 }
 </style>
 

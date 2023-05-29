@@ -4,7 +4,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue';
 import router from './router'
 import store from './store/index.js'
+import song from '@/store/song'
 
+Vue.prototype.GLOBAL = song;
 Vue.use(ElementUI);
 
 new Vue({
@@ -12,3 +14,4 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
